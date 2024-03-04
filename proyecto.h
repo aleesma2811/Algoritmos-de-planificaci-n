@@ -16,6 +16,9 @@ struct Proceso {
   // SJF
   float tiempoEspera;
 
+  // RR
+  float rafagaRestante;
+  float tiempoEjecucion;
 };
 
 bool compararLlegadaFCFS(const Proceso&a, const Proceso&b);
@@ -25,3 +28,4 @@ float tiempoPromedioFinalizacion(int n, Proceso p[]);
 // ---------------- Algoritmos ----------------
 void fcfs(int n, float llegada[], float rafagaCPU[]);
 void sjf(int n, float llegada[], float rafagaCPU[]);
+void rr(int n, float llegada[], float rafagaCPU[], int quantum);

@@ -48,7 +48,7 @@ void fcfs(int n, float llegada[], float rafagaCPU[]) {
   sort(p, p + n, compararLlegadaFCFS);
 
   // ------------PROMEDIO TIEMPO ESPERA-------------
-  
+
   float tiempoActual = 0;
 
   for (int i = 0; i < n; i++) {
@@ -141,4 +141,71 @@ void sjf(int n, float llegada[], float rafagaCPU[]) {
 
 
 
+}
+
+// Round Robin (RR)
+void rr(int n, float llegada[], float rafagaCPU[], int quantum) {
+  // Crear un vector para almacenar los procesos
+  vector<Proceso> procesoRR(n);
+
+  // Inicializar variables
+  float tiempoActual = 0.0;
+  bool procesoTerminado = false;
+
+  // Bucle principal
+  while (!procesoTerminado) {
+    // Recorrer todos los procesos
+    for (int i = 0; i < n; i++) {
+      // Si el proceso está listo para ejecutarse
+      if (procesoRR[i].tiempoLlegada <= tiempoActual) {
+        // Si el proceso no ha terminado
+        if (procesoRR[i].rafagaRestante > 0.0) {
+          // Asignar quantum de tiempo al proceso
+          float tiempoEjecucion = min(procesoRR[i].rafagaRestante, quantum);
+
+          // Actualizar variables
+          procesoRR[i].tiempoEjecucion += tiempoEjecucion;
+          procesoRR[i].rafagaRestante -= tiempoEjecucion;
+          tiempoActual += tiempoEjecucion;
+
+          // Si el proceso termina dentro del quantum
+          if (procesoRR[i].rafagaRestante == 0.0) {
+            // Calcular tiempo de espera y tiempo de finalización
+            procesoRR[i].tiempoEspera = tiempoActual - procesoRR[i].tiempoLlegada - procesoRR[i].tiempoEjecucion;
+            procesoRR[i].tiempoFinalizacion = tiempoActual;
+          }
+        }
+      }
+    }
+
+    // Comprobar si todos los procesos han terminado
+    procesoTerminado = true;
+    for (int i = 0; i < n; i++) {
+      if (procesoRR[i].rafagaRestante > 0.0) {
+        procesoTerminado = false;
+        break;
+      }
+    }
+  }
+
+  // Mostrar resultados
+  cout << "\n~~~~~~~~~~~~~ ROUND ROBIN ~~~~~~~~~~~~~~" << endl;
+  cout << "Proceso\tRafaga\tTiempo de espera\tTiempo de finalizacion" << endl;
+  for (int i = 0; i < n; i++) {
+    cout << procesoRR[i].pID << "\t" << procesoRR[i].rafaga << "\t" << procesoRR[i].tiempoEspera << "\t\t\t" << procesoRR[i].tiempoFinalizacion << endl;
+  }
+
+  // Calcular promedios
+  float promedioTiempoEspera = 0.0;
+  float promedioTiempoFinalizado = 0.0;
+  for (int i = 0; i < n; i++) {
+    promedioTiempoEspera += procesoRR[i].tiempoEspera;
+    promedioTiempoFinalizado += procesoRR[i].tiempoFinalizacion;
+  }
+  promedioTiempoEspera /= n;
+  promedioTiempoFinalizado /= n;
+
+  // Mostrar promedios
+  cout << "Tiempo de espera promedio: " << promedioTiempoEspera << "\n";
+  cout << "Tiempo de finalizacion promedio: " << promedioTiempoFinalizado << "\n";
 }
