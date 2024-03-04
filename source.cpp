@@ -5,7 +5,7 @@ int main() {
     float *llegada = new float [n];
     float *rafagaCPU = new float [n];
 
-    vector<Proceso> procesoSJF(0);
+    //vector<Proceso> procesoSJF(0);
     float llegadaSJF;
     float rafagaSJF;
 

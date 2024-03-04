@@ -10,8 +10,8 @@ bool compararLlegadaSJF(Proceso a, Proceso b) {
     return a.tiempoLlegada < b.tiempoLlegada;
 }
 
-bool ordenarRafaga(const Proceso &a, const Proceso &b) {
-  return a.rafaga < b.rafaga;
+bool comparaRafaga(Proceso a, Proceso b) {
+    return a.rafaga < b.rafaga;
 }
 
 // Promedio de tiempo de finalización
@@ -27,7 +27,7 @@ float tiempoPromedioFinalizacion(int n, Proceso p[]) {
 float tiempoPromedioEspera(int n, Proceso p[]) {
   float sumaTiempos = 0;
     for (int i = 0; i < n; i++) {
-        sumaTiempos += p[i].tiempoEspera;
+      sumaTiempos += p[i].tiempoEspera;
     }
     return sumaTiempos / n;
 }
@@ -47,8 +47,8 @@ void fcfs(int n, float llegada[], float rafagaCPU[]) {
   //ordenar los procesos por tiempo de llegada
   sort(p, p + n, compararLlegadaFCFS);
 
-  // ------------PROMEDIO TIEMPO ESPERA-------------
-  
+
+  float tiempoEsperaTotal = 0;  
   float tiempoActual = 0;
 
   for (int i = 0; i < n; i++) {
@@ -63,9 +63,10 @@ void fcfs(int n, float llegada[], float rafagaCPU[]) {
     p[i].tiempoFinalizacion = tiempoActual + p[i].rafaga;
     // Actualizar tiempo actual
     tiempoActual = p[i].tiempoFinalizacion;
+    tiempoEsperaTotal += p[i].tiempoEspera;
   }
 
-  float promedioE = tiempoPromedioEspera(n, p);
+  float promedioE = tiempoEsperaTotal / n;
   float promedioF = tiempoPromedioFinalizacion(n, p);
 
   // Mostrar resultados
@@ -86,11 +87,13 @@ void fcfs(int n, float llegada[], float rafagaCPU[]) {
 void sjf(int n, float llegada[], float rafagaCPU[]) {
   // Insertar datos al vector SJF
   vector<Proceso> sjf(n);
+
   for (int i = 0; i < n; i++) {
     sjf[i].pID = i + 1;
     sjf[i].tiempoLlegada = llegada[i];
     sjf[i].rafaga = rafagaCPU[i];
   }
+
 
   // Ordenar por tiempo de llegada
   sort(sjf.begin(), sjf.end(), compararLlegadaSJF);
@@ -100,30 +103,34 @@ void sjf(int n, float llegada[], float rafagaCPU[]) {
   int tiempoActual = 0;
 
   // Ejecutar el primer proceso que llega
-    Proceso primerProceso = sjf[0];
-    tiempoActual += primerProceso.rafaga;
-    primerProceso.tiempoFinalizacion = tiempoActual;
-    primerProceso.tiempoEspera = tiempoActual - primerProceso.tiempoLlegada - primerProceso.rafaga;
+  Proceso primerProceso = sjf[0];
+  //tiempoActual = primerProceso.rafaga;
+  tiempoActual = primerProceso.tiempoLlegada + primerProceso.rafaga;
+  primerProceso.tiempoFinalizacion = tiempoActual;
+  //primerProceso.tiempoEspera = tiempoActual - primerProceso.tiempoLlegada - primerProceso.rafaga;
+  primerProceso.tiempoEspera = primerProceso.tiempoLlegada;
 
   tiempoEsperaTotal += primerProceso.tiempoEspera;
   tiempoFinalizadoTotal += primerProceso.tiempoFinalizacion;
 
-  // Eliminar primer proceso
-  sjf.erase(sjf.begin());
 
   // Mostrar resultados
   cout << "\n~~~~~~~~~~~~~ SJF ~~~~~~~~~~~~~~" << endl;
   cout << "Proceso\tRafaga\tTiempo de espera\tTiempo de finalizacion" << endl;
   cout << primerProceso.pID << "\t" << primerProceso.rafaga << "\t" << primerProceso.tiempoEspera << "\t\t\t" << primerProceso.tiempoFinalizacion << endl;
+  // Eliminar primer proceso
+  sjf.erase(sjf.begin());
+
+   // ordenar procesos restantes por ráfaga
+  sort(sjf.begin(), sjf.end(), comparaRafaga);
   
   while (!sjf.empty()) {
-     // ordenar procesos restantes por ráfaga
-    sort(sjf.begin(), sjf.end(), ordenarRafaga);
     Proceso ProcesoActual = sjf[0];
 
     tiempoActual += ProcesoActual.rafaga;
     ProcesoActual.tiempoFinalizacion = tiempoActual;
-    ProcesoActual.tiempoEspera = tiempoActual - ProcesoActual.tiempoLlegada - ProcesoActual.rafaga;
+    //ProcesoActual.tiempoEspera = tiempoActual - ProcesoActual.tiempoLlegada - ProcesoActual.rafaga;
+    ProcesoActual.tiempoEspera = tiempoActual - ProcesoActual.tiempoLlegada;
 
     tiempoEsperaTotal += ProcesoActual.tiempoEspera;
     tiempoFinalizadoTotal += ProcesoActual.tiempoFinalizacion;
@@ -138,7 +145,4 @@ void sjf(int n, float llegada[], float rafagaCPU[]) {
   // Mostrar promedios
   cout << "Tiempo de espera promedio: " << promedioTiempoEspera << "\n";
   cout << "Tiempo de finalizacion promedio: " << promedioTiempoFinalizado << "\n";
-
-
-
 }
