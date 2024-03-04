@@ -15,10 +15,6 @@ struct Proceso {
 
   // SJF
   float tiempoEspera;
-
-  // RR
-  float rafagaRestante;
-  float tiempoEjecucion;
 };
 
 bool compararLlegadaFCFS(const Proceso&a, const Proceso&b);

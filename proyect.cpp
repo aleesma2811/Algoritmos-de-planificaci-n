@@ -165,7 +165,7 @@ void sjf(int n, float llegada[], float rafagaCPU[]) {
   cout << primerProceso.pID << "\t" << primerProceso.rafaga << "\t" << primerProceso.tiempoEspera << "\t\t\t" << primerProceso.tiempoFinalizacion << endl;
   
   while (!sjf.empty()) {
-     // ordenar procesos restantes por ráfaga
+     // ordenar procesos tiempos por ráfaga
     sort(sjf.begin(), sjf.end(), ordenarRafaga);
     Proceso ProcesoActual = sjf[0];
 
