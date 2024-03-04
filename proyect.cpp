@@ -97,6 +97,8 @@ void fcfs(int n, float llegada[], float rafagaCPU[]) {
 
   float tiempoActual = 0;
 
+  float tiempoEsperaTotal = 0; // Declare the variable "tiempoEsperaTotal"
+
   for (int i = 0; i < n; i++) {
     // Actualizar tiempo de llegada (el tiempo actual se actualiza al tiempo de llegada del siguiente proceso)
     if (tiempoActual < p[i].tiempoLlegada) {
