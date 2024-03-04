@@ -161,7 +161,10 @@ void rr(int n, float llegada[], float rafagaCPU[], int quantum) {
         // Si el proceso no ha terminado
         if (procesoRR[i].rafagaRestante > 0.0) {
           // Asignar quantum de tiempo al proceso
-          float tiempoEjecucion = min(procesoRR[i].rafagaRestante, quantum);
+          float tiempoEjecucion = procesoRR[i].rafagaRestante;
+          if (tiempoEjecucion > quantum) {
+            tiempoEjecucion = quantum;
+          }
 
           // Actualizar variables
           procesoRR[i].tiempoEjecucion += tiempoEjecucion;
