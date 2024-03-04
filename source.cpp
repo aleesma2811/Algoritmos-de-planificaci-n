@@ -1,4 +1,4 @@
-#include "proyecto.h"
+#include "proyect.cpp"
 
 int main() {
   int n=0, opc, quantum;
