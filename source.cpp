@@ -1,5 +1,6 @@
 #include "proyect.cpp"  // Change this line to 'source.cpp' to compile in VS Code, if its on your computer then leave it as 'proyect.cpp'
 
+
 int main() {
   int n=0, opc, quantum;
   float *llegada = new float [n];

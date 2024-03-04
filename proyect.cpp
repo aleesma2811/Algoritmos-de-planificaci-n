@@ -5,11 +5,12 @@ bool compararLlegadaFCFS(const Proceso&a, const Proceso&b) {
   return a.tiempoLlegada < b.tiempoLlegada;
 }
 
-
+// Comparar tiempo de llegada para SJF
 bool compararLlegadaSJF(Proceso a, Proceso b) {
     return a.tiempoLlegada < b.tiempoLlegada;
 }
 
+//  Comparar ráfaga de CPU para SJF
 bool comparaRafaga(Proceso a, Proceso b) {
     return a.rafaga < b.rafaga;
 }
@@ -26,11 +27,12 @@ float tiempoPromedioFinalizacion(int n, Proceso p[]) {
 // Promedio de tiempo de espera
 float tiempoPromedioEspera(int n, Proceso p[]) {
   float sumaTiempos = 0;
-    for (int i = 0; i < n; i++) {
-      sumaTiempos += p[i].tiempoEspera;
-    }
-    return sumaTiempos / n;
+  for (int i = 0; i < n; i++) {
+    sumaTiempos += p[i].tiempoEspera;
+  }
+  return sumaTiempos/n;
 }
+
 
 // ----------------- ROUND ROBIN -----------------
 // Encontrar el tiempo de espera de cada proceso
@@ -82,9 +84,10 @@ void RRfindTurnAroundTime(const Proceso a[], int n, float burstTime[], int waiti
 
 // ---------------------- ALGORITMOS -----------------------------
 
+
 // FCFS
 void fcfs(int n, float llegada[], float rafagaCPU[]) {
-  Proceso* p = new Proceso[n];
+  Proceso *p = new Proceso[n];
   for (int i = 0; i < n; i++) {
     p[i].pID = i + 1;
     p[i].tiempoLlegada = llegada[i];
@@ -94,42 +97,38 @@ void fcfs(int n, float llegada[], float rafagaCPU[]) {
   }
   //ordenar los procesos por tiempo de llegada
   sort(p, p + n, compararLlegadaFCFS);
-
-  float tiempoActual = 0;
-
-  float tiempoEsperaTotal = 0; // Declare the variable "tiempoEsperaTotal"
-
+  
+  // ------------EJECUCIÓN DE LOS PROCESOS-------------
   for (int i = 0; i < n; i++) {
-    // Actualizar tiempo de llegada (el tiempo actual se actualiza al tiempo de llegada del siguiente proceso)
-    if (tiempoActual < p[i].tiempoLlegada) {
-      tiempoActual = p[i].tiempoLlegada;
+    if(i == 0){
+      p[i].inicioEjecucion = p[i].tiempoLlegada;
+      p[i].tiempoEspera = p[i].inicioEjecucion - p[i].tiempoLlegada;
+      p[i].tiempoFinalizacion = p[i].inicioEjecucion + p[i].rafaga;
+    } else {    
+      p[i].inicioEjecucion = p[i - 1].tiempoFinalizacion;
+      p[i].tiempoEspera = p[i].inicioEjecucion - p[i].tiempoLlegada;
+      p[i].tiempoFinalizacion = p[i].inicioEjecucion + p[i].rafaga;
     }
-
-    // Establecer tiempo de finalización de cada proceso
-    p[i].inicioEjecucion = tiempoActual;
-    // Se suma el tiempo actual (tiempo que lleva esperando el proceso) mas la rafaga
-    p[i].tiempoFinalizacion = tiempoActual + p[i].rafaga;
-    // Actualizar tiempo actual
-    tiempoActual = p[i].tiempoFinalizacion;
-    tiempoEsperaTotal += p[i].tiempoEspera;
   }
-
-  float promedioE = tiempoEsperaTotal / n;
+  float promedioE = tiempoPromedioEspera(n, p);
   float promedioF = tiempoPromedioFinalizacion(n, p);
-
+  
   // Mostrar resultados
   cout << "\n~~~~~~~~~~~~~ FCFS ~~~~~~~~~~~~~~" << endl;
-  cout << "Proceso\tRafaga\tInicio\tFinal" << endl;
+  cout << "Proceso\tRafaga\tInicio\tTiempo Espera\tFinal" << endl;
     for (int i = 0; i < n; i++) {
         cout << p[i].pID << "\t" 
         << p[i].rafaga << "\t"
         << p[i].inicioEjecucion << "\t" 
+        << p[i].tiempoEspera << "\t" 
         << p[i].tiempoFinalizacion << endl;
     }
 
   cout << "Tiempo promedio de espera: " << promedioE << endl;
   cout << "Tiempo promedio de finalizacion: " << promedioF << endl;
+  delete []p;
 }
+
 
 //SJF
 void sjf(int n, float llegada[], float rafagaCPU[]) {
@@ -141,8 +140,6 @@ void sjf(int n, float llegada[], float rafagaCPU[]) {
     sjf[i].tiempoLlegada = llegada[i];
     sjf[i].rafaga = rafagaCPU[i];
   }
-
-
   // Ordenar por tiempo de llegada
   sort(sjf.begin(), sjf.end(), compararLlegadaSJF);
 
@@ -160,7 +157,6 @@ void sjf(int n, float llegada[], float rafagaCPU[]) {
 
   tiempoEsperaTotal += primerProceso.tiempoEspera;
   tiempoFinalizadoTotal += primerProceso.tiempoFinalizacion;
-
 
   // Mostrar resultados
   cout << "\n~~~~~~~~~~~~~ SJF ~~~~~~~~~~~~~~" << endl;
@@ -193,7 +189,6 @@ void sjf(int n, float llegada[], float rafagaCPU[]) {
   // Mostrar promedios
   cout << "Tiempo de espera promedio: " << promedioTiempoEspera << "\n";
   cout << "Tiempo de finalizacion promedio: " << promedioTiempoFinalizado << "\n";
-
 }
 
 // Round Robin (RR)

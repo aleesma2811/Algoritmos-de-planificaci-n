@@ -5,6 +5,7 @@
 using namespace std;
 
 struct Proceso {
+
   // FCFS
   int pID; // ID del proceso
   float tiempoLlegada; 
@@ -15,6 +16,7 @@ struct Proceso {
 
   // SJF
   float tiempoEspera;
+
 };
 
 bool compararLlegadaFCFS(const Proceso&a, const Proceso&b);
@@ -22,6 +24,7 @@ bool compararLlegadaSJF(Proceso a, Proceso b);
 float tiempoPromedioEspera(int n, Proceso p[]);
 float tiempoPromedioFinalizacion(int n, Proceso p[]);
 bool comparaRafaga(Proceso a, Proceso b);
+
 
 // ---------------- Algoritmos ----------------
 void fcfs(int n, float llegada[], float rafagaCPU[]);
