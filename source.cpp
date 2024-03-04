@@ -23,6 +23,11 @@ int main() {
     cin >> llegada[i];
     cout << "Ingrese la ráfaga del proceso " << i + 1 << ": ";
     cin >> rafagaCPU[i];
+
+    if (rafagaCPU[i] < 1 || rafagaCPU[i] > 15) {
+        cout << "Tiempo de rafaga invalido. Debe ser entre 1 y 15.\n";
+        return 0;
+    }
   }
 
   do {
